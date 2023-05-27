@@ -1,0 +1,52 @@
+/*==========
+LAYOUT
+=========*/
+
+.container {
+    width: 85%;
+    max-width: var(--page-max-width);
+    margin:  0 auto;
+}
+@media only screen and (min-width: 700px) {
+    .container {
+        width: 95%;
+    }
+}
+
+
+.header {
+    max-height: 80px;
+    padding: 1.9em 0;
+    background-color: var(--page-header-bg-color);
+    box-shadow: var(--page-header-box-shadow);
+
+    /* ORIGINAL
+    @include theme-transition; */
+}
+.header__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header__title {
+    font-size: 0.45rem;
+    font-weight: var(--font-extra-bold);
+}
+.header__theme {
+    font-size: 0.85rem;
+    font-weight: var(--font-semi-bold);
+}
+
+
+/*==========
+DESKTOP
+=========*/
+
+@media only screen and (min-width: 700px) {
+
+    .header__title {
+        font-size: 0.75rem;
+    }
+
+}
