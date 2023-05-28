@@ -1,0 +1,42 @@
+.custom-textbox {
+    position: relative;
+}
+
+.custom-textbox:before {
+    position: absolute;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900; /* Needed to show icon */
+    top: 50%;
+    left: 35px;
+    transform: translateY(-50%);
+
+    content: "\f002";
+    opacity: 0.6;
+    color: var(--textbox-text-color);
+}
+
+.custom-textbox__input {
+    width: 100%;
+    padding: 1.4em 1.3em 1.4em 5em;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: var(--textbox-box-shadow);
+    background-color: var(--textbox-bg-color);
+    color: var(--textbox-text-color);
+
+    /* ORIGINAL
+    @include theme-transition; */
+}
+.custom-textbox__input::placeholder {
+        opacity: 0.6;
+        color: var(--textbox-text-color);
+}
+
+
+@media only screen and (min-width: 700px) {
+
+    .search__country {
+        flex: 1;
+    }
+
+}
