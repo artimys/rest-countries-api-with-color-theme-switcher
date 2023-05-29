@@ -1,0 +1,26 @@
+/*==========
+LAYOUT
+=========*/
+
+.results__row {
+    /* Get that smaller width in mobile */
+    width: 70%;
+    justify-content: center;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+    grid-template-rows: min(335px, 680px);
+    gap: 3.5em;
+}
+
+/*==========
+DESKTOP
+=========*/
+
+@media only screen and (min-width: 700px) {
+    .results__row {
+        width: 100%; /* Take up the whole container */
+        gap: 5em;
+    }
+}

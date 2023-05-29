@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Header from './component/layout/Header';
 import Main from './component/layout/Main';
-import SearchCountries from './component/pages/SearchCountries';
+import SearchCountries from './pages/SearchCountries';
 
 import './App.css'
 

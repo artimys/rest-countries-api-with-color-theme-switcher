@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
-import styles from '../styles/SearchCountries.module.css'
+import styles from '../component/styles/SearchCountries.module.css'
 
-import SearchBox from '../searchBar/SearchBox'
-import PageLoader from '../layout/PageLoader'
+import SearchBox from '../component/searchBar/SearchBox'
+import PageLoader from '../component/layout/PageLoader'
+import CountriesList from '../component/countries/CountriesList'
 
-import data from '../../data.json'
+import data from '../data.json'
 
 function SearchCountries() {
 
@@ -32,6 +33,8 @@ function SearchCountries() {
 
     useEffect(() => {
         console.log('Data first loaded');
+        // setData(data);
+
         return () => {
             clearTimeout(debounceTimeoutRef.current);
         }
@@ -53,6 +56,10 @@ function SearchCountries() {
             </section>
 
             { isLoading && <PageLoader /> }
+
+            <section>
+                { data && <CountriesList countries={data} /> }
+            </section>
         </>
     )
 }
