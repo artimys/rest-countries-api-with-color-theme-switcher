@@ -9,7 +9,8 @@ function SearchBox(props) {
                                   title="Search for a country..."
                                   placeholder="Search for a country..."
                                   autoComplete="off"
-                                  value={props.searchTerm}
+                                //   value={props.searchTerm}
+                                  ref={props.reff}
                                   onInput={props.onChangeHandler}
                 />
             </div>
