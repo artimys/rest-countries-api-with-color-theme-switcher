@@ -15,13 +15,13 @@ function CountryItem(props) {
     return(
         <article className={styles.card}>
             <header className={styles.card__flag}>
-                    <img src={props.flag} alt={`${country.name} Flag`} />
+                    <img src={props.flags.svg} alt={props.flags.alt} />
             </header>
 
             <div className={styles.card__content}>
                 <h2 className={styles.card__country}>
                     {/* <a href="detail.html?country=${country.name}" title={country.name}>{country.name}</a> */}
-                    <Link to='/country?c='>{props.name}</Link>
+                    <Link to='/country?c='>{props.name.common}</Link>
                 </h2>
 
                 <ul className={styles.card__list}>

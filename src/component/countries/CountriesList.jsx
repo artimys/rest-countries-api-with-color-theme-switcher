@@ -8,7 +8,7 @@ function CountriesList(props) {
                     {props.countries && props.countries.map((country) => (
                         <CountryItem
                             key={country.id}
-                            flag={country.flag}
+                            flags={country.flags}
                             name={country.name}
                             population={country.population}
                             region={country.region}
