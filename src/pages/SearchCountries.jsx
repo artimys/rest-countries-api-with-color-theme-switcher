@@ -4,6 +4,7 @@ import styles from '../component/styles/SearchCountries.module.css'
 import SearchBox from '../component/searchBar/SearchBox'
 import PageLoader from '../component/layout/PageLoader'
 import CountriesList from '../component/countries/CountriesList'
+import useFetch from '../hooks/UseFetch'
 
 
 function SearchCountries() {
@@ -13,16 +14,20 @@ function SearchCountries() {
     const searchInputRef = useRef(null);
     const regionRef = useRef(null);
     const debounceTimeoutRef = useRef(null);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [filteredCountries, setFilteredCountries] = useState([]);
+
+    const { isLoading, error, callFetch } = useFetch();
+
+
 
     const handleSearchChange = () => {
         clearTimeout(debounceTimeoutRef.current);
 
-        if (!isLoading) {
-            console.log('loading once');
-            setIsLoading(true);
-        }
+        // if (!isLoading) {
+        //     console.log('loading once');
+        //     setIsLoading(true);
+        // }
 
         debounceTimeoutRef.current = setTimeout(() => {
             const searchTerm = searchInputRef.current.value;
@@ -36,6 +41,7 @@ function SearchCountries() {
 
         console.log('Data first loaded');
         buildEndpoint();
+
 
         return () => {
             clearTimeout(debounceTimeoutRef.current);
@@ -82,56 +88,65 @@ function SearchCountries() {
 
         } else if (selectedRegion.length > 0) {
             console.log("Filter by Region");
-            fetchCountries(`region/${selectedRegion}`)
-                .then(d => {
-                    setFilteredCountries(d);
-                })
+            callFetch(`region/${selectedRegion}`)
+            .then(d => {
+                setFilteredCountries(d);
+            });
 
         } else if (searchedTerm.length > 0) {
             console.log("Filter by SearchBox");
-            fetchCountries(`name/${searchedTerm}`)
-                .then(d => {
-                    setFilteredCountries(d);
-                })
+            callFetch(`name/${searchedTerm}`)
+            .then(d => {
+                setFilteredCountries(d);
+            });
 
         } else  {
             console.log("Show all");
-            fetchCountries("all")
-                .then(d => {
-                    setFilteredCountries(d);
-                })
+            callFetch("all")
+            .then(d => {
+                setFilteredCountries(d);
+            });
         }
     }
 
     const changeRegion = (e) => {
-        const value = e.target.value;
-            setIsLoading(true);
         buildEndpoint();
     }
 
 
-    const fetchCountries = async (endpoint) => {
-        const newData = [];
-        try {
-            const response = await fetch(`https://restcountries.com/v3.1/${endpoint}`);
-            const data = await response.json();
+    // const fetchCountries = async (endpoint) => {
+    //     const newData = [];
+    //     try {
+    //         const response = await fetch(`https://restcountries.com/v3.1/${endpoint}`);
 
-            for (const key in data) {
-                const newRow = {
-                    id: key,
-                    ...data[key]
-                };
-                newData.push(newRow);
-            }
+    //         if (!response.ok) {
+    //             throw Error(response.statusText);
+    //         // } else if(response.status === 404) {
+    //         //     return Promise.reject('error 404')
+    //         // } else {
+    //         //     return Promise.reject('some other error: ' + response.status)
+    //         }
 
-            console.log("Data fetched, count:", newData.length);
-            setIsLoading(false);
-        } catch (error) {
-            console.log(error);
-        }
 
-        return newData;
-    }
+    //         const data = await response.json();
+
+    //         for (const key in data) {
+    //             const newRow = {
+    //                 id: key,
+    //                 ...data[key]
+    //             };
+    //             newData.push(newRow);
+    //         }
+
+    //         console.log("Data fetched, count:", newData.length);
+    //         setIsLoading(false);
+    //     } catch (error) {
+    //         console.log("fetchCountries error", error);
+    //         setIsLoading(false);
+    //     }
+
+    //     return newData;
+    // }
 
 
     return (
@@ -160,6 +175,7 @@ function SearchCountries() {
             { isLoading && <PageLoader /> }
 
             <section>
+                { !isLoading && filteredCountries.length === 0 && <p>No countries found for {searchInputRef.current?.value}</p>}
                 { !isLoading && filteredCountries && <CountriesList countries={filteredCountries} /> }
             </section>
         </>
