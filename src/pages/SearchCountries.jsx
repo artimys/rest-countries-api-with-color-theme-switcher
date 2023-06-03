@@ -4,44 +4,24 @@ import styles from '../component/styles/SearchCountries.module.css'
 import SearchBox from '../component/searchBar/SearchBox'
 import PageLoader from '../component/layout/PageLoader'
 import CountriesList from '../component/countries/CountriesList'
-import useFetch from '../hooks/UseFetch'
+import useRestCountriesFetch from '../hooks/UseRestCountriesFetch'
 
 
 function SearchCountries() {
-
     console.log('Page re-render');
 
     const searchInputRef = useRef(null);
     const regionRef = useRef(null);
     const debounceTimeoutRef = useRef(null);
-    // const [isLoading, setIsLoading] = useState(false);
+
+    const { isLoading, error, fetchBy, fetchByNameAndRegion } = useRestCountriesFetch();
     const [filteredCountries, setFilteredCountries] = useState([]);
 
-    const { isLoading, error, callFetch } = useFetch();
 
-
-
-    const handleSearchChange = () => {
-        clearTimeout(debounceTimeoutRef.current);
-
-        // if (!isLoading) {
-        //     console.log('loading once');
-        //     setIsLoading(true);
-        // }
-
-        debounceTimeoutRef.current = setTimeout(() => {
-            const searchTerm = searchInputRef.current.value;
-            console.log("calling API for:", searchTerm);
-
-            buildEndpoint();
-        }, 900);
-    };
 
     useEffect(() => {
-
-        console.log('Data first loaded');
-        buildEndpoint();
-
+        console.log("useEffect: page load one time");
+        searchCountries();
 
         return () => {
             clearTimeout(debounceTimeoutRef.current);
@@ -49,104 +29,81 @@ function SearchCountries() {
     }, []);
 
 
-    const buildEndpoint = () => {
+    const debounceSearchHandler = () => {
+        clearTimeout(debounceTimeoutRef.current);
+
+        debounceTimeoutRef.current = setTimeout(() => {
+            const searchTerm = searchInputRef.current.value;
+            console.log("calling API for:", searchTerm);
+
+            searchCountries();
+        }, 900);
+    };
+
+    const changeRegionHandler = (e) => {
+        searchCountries();
+    }
+
+    const searchCountries = () => {
         const searchedTerm = searchInputRef.current.value.trim().toLowerCase();
         const selectedRegion = regionRef.current.value;
 
-        if (searchedTerm.length > 0 && selectedRegion.length > 0) {
-            console.log("Filter by Search+Region");
+        const hasEnteredSearch = searchedTerm.length > 0;
+        const hasSelectedRegion = selectedRegion.length > 0;
 
+        if (hasEnteredSearch && hasSelectedRegion) {
+            console.log("%cSearch: filter by Search+Region", "background: green");
 
-  const nameSearch = fetch(`https://restcountries.com/v3.1/name/${searchedTerm}`).then((response) => response.json());
-  const regionSearch = fetch(`https://restcountries.com/v3.1/region/${selectedRegion}`).then((response) => response.json());
-
-            Promise.all([nameSearch, regionSearch])
-                .then(([nameResults, regionResults]) => {
-                    const filtered = nameResults.filter((country) =>
-                    regionResults.some((regionCountry) => regionCountry.name.common === country.name.common)
-                );
-
-                const newData = [];
-                for (const key in filtered) {
-                    const newRow = {
-                        id: key,
-                        ...filtered[key]
-                    };
-                    newData.push(newRow);
-                }
-
-
-                console.log("Data fetched, count:", newData.length);
-                setIsLoading(false);
-                setFilteredCountries(newData);
-            }).catch((error) => {
-                console.error('Error fetching search data:', error);
-            });
-
-
-
-
-        } else if (selectedRegion.length > 0) {
-            console.log("Filter by Region");
-            callFetch(`region/${selectedRegion}`)
+            fetchByNameAndRegion(searchedTerm, selectedRegion)
             .then(d => {
                 setFilteredCountries(d);
             });
 
-        } else if (searchedTerm.length > 0) {
-            console.log("Filter by SearchBox");
-            callFetch(`name/${searchedTerm}`)
-            .then(d => {
-                setFilteredCountries(d);
-            });
+//   const nameSearch = fetch(`https://restcountries.com/v3.1/name/${searchedTerm}`).then((response) => response.json());
+//   const regionSearch = fetch(`https://restcountries.com/v3.1/region/${selectedRegion}`).then((response) => response.json());
 
-        } else  {
-            console.log("Show all");
-            callFetch("all")
-            .then(d => {
-                setFilteredCountries(d);
-            });
+//             Promise.all([nameSearch, regionSearch])
+//                 .then(([nameResults, regionResults]) => {
+//                     const filtered = nameResults.filter((country) =>
+//                     regionResults.some((regionCountry) => regionCountry.name.common === country.name.common)
+//                 );
+
+//                 const newData = [];
+//                 for (const key in filtered) {
+//                     const newRow = {
+//                         id: key,
+//                         ...filtered[key]
+//                     };
+//                     newData.push(newRow);
+//                 }
+
+
+//                 console.log("Data fetched, count:", newData.length);
+//                 setIsLoading(false);
+//                 setFilteredCountries(newData);
+//             }).catch((error) => {
+//                 console.error('Error fetching search data:', error);
+//             });
+
+        } else if (hasSelectedRegion) {
+            console.log("%cSearch: filter by RegionDropdown", "background: green");
+
+            fetchBy(`region/${selectedRegion}`)
+                .then(data => setFilteredCountries(data));
+
+        } else if (hasEnteredSearch) {
+            console.log("%cSearch: filter by SearchBox", "background: green");
+
+            fetchBy(`name/${searchedTerm}`)
+                .then(data => setFilteredCountries(data));
+
+        } else {
+            console.log("%cSearch: show all", "background: green");
+
+            fetchBy("all")
+                .then(data => setFilteredCountries(data));
         }
     }
-
-    const changeRegion = (e) => {
-        buildEndpoint();
-    }
-
-
-    // const fetchCountries = async (endpoint) => {
-    //     const newData = [];
-    //     try {
-    //         const response = await fetch(`https://restcountries.com/v3.1/${endpoint}`);
-
-    //         if (!response.ok) {
-    //             throw Error(response.statusText);
-    //         // } else if(response.status === 404) {
-    //         //     return Promise.reject('error 404')
-    //         // } else {
-    //         //     return Promise.reject('some other error: ' + response.status)
-    //         }
-
-
-    //         const data = await response.json();
-
-    //         for (const key in data) {
-    //             const newRow = {
-    //                 id: key,
-    //                 ...data[key]
-    //             };
-    //             newData.push(newRow);
-    //         }
-
-    //         console.log("Data fetched, count:", newData.length);
-    //         setIsLoading(false);
-    //     } catch (error) {
-    //         console.log("fetchCountries error", error);
-    //         setIsLoading(false);
-    //     }
-
-    //     return newData;
-    // }
 
 
     return (
@@ -155,11 +112,11 @@ function SearchCountries() {
                 <div className={styles.search__row}>
                     <SearchBox
                         reff={searchInputRef}
-                        onChangeHandler={handleSearchChange}
+                        onChangeHandler={debounceSearchHandler}
                     />
                 </div>
 
-                <select name="searchRegion" id="searchRegion" ref={regionRef} onChange={changeRegion}>
+                <select name="searchRegion" id="searchRegion" ref={regionRef} onChange={changeRegionHandler}>
                     <option value="">Filter by Region</option>
                     <option value="africa">Africa</option>
                     <option value="americas">Americas</option>
