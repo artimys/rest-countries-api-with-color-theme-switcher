@@ -6,6 +6,9 @@ import PageLoader from '../component/layout/PageLoader'
 import CountriesList from '../component/countries/CountriesList'
 import useRestCountriesFetch from '../hooks/UseRestCountriesFetch'
 
+import ErrorBoundary from '../component/ErrorBoundary'
+import NoCountriesFound from '../component/countries/NoCountriesFound'
+
 
 function SearchCountries() {
     console.log('Page re-render');
@@ -28,16 +31,14 @@ function SearchCountries() {
         }
     }, []);
 
-
     const debounceSearchHandler = () => {
         clearTimeout(debounceTimeoutRef.current);
 
         debounceTimeoutRef.current = setTimeout(() => {
             const searchTerm = searchInputRef.current.value;
-            console.log("calling API for:", searchTerm);
-
+            console.log("deboundSearchHandler: final debounce to begin searchCountries() for:", searchTerm);
             searchCountries();
-        }, 900);
+        }, 500);
     };
 
     const changeRegionHandler = (e) => {
@@ -53,58 +54,24 @@ function SearchCountries() {
 
         if (hasEnteredSearch && hasSelectedRegion) {
             console.log("%cSearch: filter by Search+Region", "background: green");
-
-            fetchByNameAndRegion(searchedTerm, selectedRegion)
-            .then(d => {
-                setFilteredCountries(d);
-            });
-
-//   const nameSearch = fetch(`https://restcountries.com/v3.1/name/${searchedTerm}`).then((response) => response.json());
-//   const regionSearch = fetch(`https://restcountries.com/v3.1/region/${selectedRegion}`).then((response) => response.json());
-
-//             Promise.all([nameSearch, regionSearch])
-//                 .then(([nameResults, regionResults]) => {
-//                     const filtered = nameResults.filter((country) =>
-//                     regionResults.some((regionCountry) => regionCountry.name.common === country.name.common)
-//                 );
-
-//                 const newData = [];
-//                 for (const key in filtered) {
-//                     const newRow = {
-//                         id: key,
-//                         ...filtered[key]
-//                     };
-//                     newData.push(newRow);
-//                 }
-
-
-//                 console.log("Data fetched, count:", newData.length);
-//                 setIsLoading(false);
-//                 setFilteredCountries(newData);
-//             }).catch((error) => {
-//                 console.error('Error fetching search data:', error);
-//             });
+            fetchByNameAndRegion(searchedTerm, selectedRegion).then(data => setFilteredCountries(data));
 
         } else if (hasSelectedRegion) {
             console.log("%cSearch: filter by RegionDropdown", "background: green");
-
-            fetchBy(`region/${selectedRegion}`)
-                .then(data => setFilteredCountries(data));
+            fetchBy(`region/${selectedRegion}`).then(data => setFilteredCountries(data));
 
         } else if (hasEnteredSearch) {
             console.log("%cSearch: filter by SearchBox", "background: green");
-
-            fetchBy(`name/${searchedTerm}`)
-                .then(data => setFilteredCountries(data));
+            fetchBy(`name/${searchedTerm}`).then(data => setFilteredCountries(data));
 
         } else {
             console.log("%cSearch: show all", "background: green");
-
-            fetchBy("all")
-                .then(data => setFilteredCountries(data));
+            fetchBy("all").then(data => setFilteredCountries(data));
         }
     }
 
+    const noCountryResults = !isLoading && filteredCountries.length === 0;
+    const hasCountryResults = !isLoading && filteredCountries.length > 0;
 
     return (
         <>
@@ -124,17 +91,16 @@ function SearchCountries() {
                     <option value="europe">Europe</option>
                     <option value="oceania">Oceania</option>
                 </select>
-
-
-                <div>Loading: {isLoading.toString()}</div>
             </section>
 
             { isLoading && <PageLoader /> }
 
-            <section>
-                { !isLoading && filteredCountries.length === 0 && <p>No countries found for {searchInputRef.current?.value}</p>}
-                { !isLoading && filteredCountries && <CountriesList countries={filteredCountries} /> }
-            </section>
+            <ErrorBoundary fallback="FATAL ERROR">
+                <section>
+                    { noCountryResults && <NoCountriesFound /> }
+                    { hasCountryResults && <CountriesList countries={filteredCountries} /> }
+                </section>
+            </ErrorBoundary>
         </>
     )
 }

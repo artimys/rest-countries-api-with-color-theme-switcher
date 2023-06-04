@@ -15,6 +15,11 @@ const useFetch = () => {
 
         try {
             const response = await fetch(`${API}${endpoint}`);
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
             const data = await response.json();
 
             for (const key in data) {
@@ -45,16 +50,21 @@ const useFetch = () => {
         const newData = [];
 
         try {
-            const fetchByName = fetch(`${API}name/${name}`);
-            const fetchByRegion = fetch(`${API}region/${region}`);
-
             const responses = Promise.all([
-                fetchByName,
-                fetchByRegion
+                fetch(`${API}name/${name}`),
+                fetch(`${API}region/${region}`)
             ]);
 
+
+            // TODO - need to error handle when one call returns 404,
+            // TODO - code continues and errors at nameResutls.filter when name='perus'
+            // const [response1, response2] = responses;
+            // if (!response1.ok || !response2.ok) {
+            //     throw new Error(response.statusText);
+            // }
+
             // Getting JSON data from resposnes and destructuring data
-            const jsonPromises = responses.map(response => response.json());
+            const jsonPromises = (await responses).map(response => response.json());
             const [nameResults, regionResults] = await Promise.all(jsonPromises);
 
             const data = nameResults.filter(country =>
