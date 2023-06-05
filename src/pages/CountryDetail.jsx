@@ -106,13 +106,17 @@ function CountryDetail() {
                                     </ul>
                                 </div>
 
-                                <h2>Border Countries:</h2>
-                                {/* <div className={styles.detail__card__borders}> */}
-                                    {country.borders.map((country, index) => (
-                                        <Link key={index} to="/" className={`${darkTheme ? styles.btn : styles['btn-dark']} ${styles['btn-slim']}`}>{country}</Link>
-                                    ))}
-                                {/* </div> */}
+                                <div className={styles.detail__card__borders}>
+                                    <div>
+                                        <h2>Border Countries:</h2>
+                                    </div>
 
+                                    <div>
+                                        {country.borders.map((country, index) => (
+                                            <Link key={index} to="/" className={`${darkTheme ? styles.btn : styles['btn-dark']} ${styles['btn-slim']}`}>{country}</Link>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </>
                     )}

@@ -26,8 +26,10 @@
 
 .detail__card__content h2 {
     font-size: 1.1rem;
-    margin-top: 3em;
-    margin-bottom: 1.5em;
+}
+
+.detail__card__props {
+    margin-bottom: 3em;
 }
 
 .detail__card__props ul {
@@ -49,7 +51,14 @@
 
 .detail__card__borders {
     display: flex;
-    gap: 0.5em;
+    flex-direction: column;
+    gap: 1.2em;
+}
+
+.detail__card__borders > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7em;
 }
 
 .btn,
@@ -63,13 +72,16 @@
     font-size: 1.05rem;
     font-size: 16px;
 }
+
 .btn:active,
 .btn:visited {
     color: black;
 }
+
 .btn:hover {
     box-shadow: 0 0 5px #333;
 }
+
 .btn-dark:hover {
     box-shadow: 0 0 5px gray;
 }
@@ -83,8 +95,6 @@
 .btn-dark.btn-slim {
     padding: 5px 35px;
     font-size: 14px;
-    margin-right: 0.7em;
-    margin-bottom: 0.7em;
 }
 
 .btn-dark {
@@ -163,11 +173,6 @@ DESKTOP
         transition: margin 1s ease-in-out;
     }
 
-    .detail__card__content h2 {
-        display: inline;
-        margin-right: 1em
-    }
-
     .detail__card__props {
         grid-template-columns: auto auto;
         justify-content: space-between;
@@ -177,6 +182,19 @@ DESKTOP
     .detail__card__props ul,
     .detail__card__props ul:last-child {
         margin-top: 1em;
+    }
+
+    .detail__card__borders {
+        flex-direction: row;
+        justify-content: start;
+    }
+
+    .detail__card__borders > div:first-child {
+        flex-shrink: 0;
+    }
+
+    .detail__card__content h2 {
+        margin-top: 0.2em;
     }
 
 }
