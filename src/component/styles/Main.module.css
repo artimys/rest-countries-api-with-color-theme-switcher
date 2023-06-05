@@ -1,11 +1,11 @@
 .container {
-    width: 85%;
+    width: 90%; /* should be 85% for detail page */
     max-width: var(--page-max-width);
-    margin:  0 auto;
+    margin: 0 auto;
 }
 
-@media only screen and (min-width: 700px) {
+@media only screen and (min-width: 800px) {
     .container {
-        width: 95%;
+        width: 90%;
     }
 }

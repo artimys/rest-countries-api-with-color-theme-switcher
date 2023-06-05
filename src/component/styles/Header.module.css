@@ -3,20 +3,20 @@ LAYOUT
 =========*/
 
 .container {
-    width: 85%;
+    width: 90%;
     max-width: var(--page-max-width);
-    margin:  0 auto;
+    margin: 0 auto;
 }
-@media only screen and (min-width: 700px) {
+@media only screen and (min-width: 800px) {
     .container {
-        width: 95%;
+        width: 90%;
     }
 }
 
 
 .header {
     max-height: 80px;
-    padding: 1.9em 0;
+    padding: 2.8em 0 5em;
     background-color: var(--page-header-bg-color);
     box-shadow: var(--page-header-box-shadow);
 
@@ -30,7 +30,7 @@ LAYOUT
 }
 
 .header__title {
-    font-size: 0.45rem;
+    font-size: 0.55rem;
     font-weight: var(--font-extra-bold);
 }
 .header__theme {
@@ -44,6 +44,10 @@ DESKTOP
 =========*/
 
 @media only screen and (min-width: 700px) {
+
+    .header {
+        padding: 1.5em 0;
+    }
 
     .header__title {
         font-size: 0.75rem;

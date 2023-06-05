@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Header from './component/layout/Header';
 import Main from './component/layout/Main';
 import SearchCountries from './pages/SearchCountries';
+import CountryDetail from './pages/CountryDetail';
 
 import './App.css'
 
@@ -17,10 +18,7 @@ function App() {
         <Main>
           <Routes>
             <Route path='/' element={<SearchCountries />} exact />
-
-            {/* <Route path='/country'>
-              <Country />
-            </Route> */}
+            <Route path='/country' element={<CountryDetail />} />
           </Routes>
         </Main>
 

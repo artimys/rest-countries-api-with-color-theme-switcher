@@ -19,16 +19,20 @@
     position: absolute;
     font-family: "Font Awesome 5 Free";
     font-weight: 900; /* Required to show icon */
-    top: 50%;
+    top: 30%;
     left: 5px;
     transform: translateY(-50%);
+    transform: rotate(-20deg);
 }
+
 .theme-switch[aria-pressed="false"]:before {
     content: "\f186"; /* moon */
+    font-weight: 500; /* open moon version */
 }
+
 .theme-switch[aria-pressed="true"]:after {
-    content: "\f185"; /* sun */
-    color: yellow;
+    content: "\f186"; /* moon */
+    color: white;
 }
 
 

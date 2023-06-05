@@ -21,7 +21,7 @@ function CountryItem(props) {
             <div className={styles.card__content}>
                 <h2 className={styles.card__country}>
                     {/* <a href="detail.html?country=${country.name}" title={country.name}>{country.name}</a> */}
-                    <Link to='/country?c='>{props.name.common}</Link>
+                    <Link to={`/country?c=${props.name.common}`}>{props.name.common}</Link>
                 </h2>
 
                 <ul className={styles.card__list}>
