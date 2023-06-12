@@ -15,7 +15,7 @@ function CountryDetail() {
     const searchParams = new URLSearchParams(location.search);
     const countryParam = searchParams.get('c');
 
-    const { isLoading, error, fetchBy } = useRestCountriesFetch();
+    const { isLoading, error, fetchCountryDetail } = useRestCountriesFetch();
     const [country, setCountry] = useState({});
 
     const darkTheme = useTheme();
@@ -30,13 +30,13 @@ function CountryDetail() {
     }, []);
 
     const getCountry = () => {
-        fetchBy(`name/${countryParam}?fields=name,population,region,subregion,capital,flags,tld,currencies,languages,borders&fullText=true`)
+        fetchCountryDetail(countryParam)
             .then(data => {
-                setCountry(data[0]);
-                console.log("Got the data:", data[0]);
+                setCountry(data);
+                console.log("Got the data:", data);
             })
 
-            console.log("getCountry() done");
+        console.log("getCountry() done");
     }
 
 

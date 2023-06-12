@@ -92,11 +92,59 @@ const useFetch = () => {
     }, []);
 
 
+    const fetchCountryDetail = useCallback(async (country) => {
+        setIsLoading(true);
+        setError(null);
+
+        let newData = {};
+        let borderNames = [];
+
+        try {
+            // Fetch single country
+            const response = await fetch(`${API}name/${country}?fields=name,population,region,subregion,capital,flags,tld,currencies,languages,borders&fullText=true`)
+            if (!response.ok) {
+                // TODO handle 404
+                throw new Error(response.statusText);
+            }
+            const data = await response.json();
+
+            // Fetch border country names using codes
+            const countryData = data[0];
+            if (countryData.borders.length > 0) {
+                const borderCodes = countryData.borders.join(",");
+                const bordersResponse = await fetch(`${API}alpha?fields=name&codes=${borderCodes}`)
+
+                if (!bordersResponse.ok) {
+                    throw new Error(bordersResponse.statusText);
+                }
+                const bordersData = await bordersResponse.json();
+                borderNames = bordersData.map(country => country.name.common);
+            }
+
+            newData = {
+                ...countryData,
+                borders: borderNames
+            };
+
+            setIsLoading(false);
+            setError(null);
+
+        } catch(error) {
+            setIsLoading(false);
+            setError(error);
+            console.error("callFetch:", error);
+        }
+
+        return newData;
+    }, []);
+
+
     return {
         isLoading,
         error,
         fetchBy,
-        fetchByNameAndRegion
+        fetchByNameAndRegion,
+        fetchCountryDetail
     };
 };
 
