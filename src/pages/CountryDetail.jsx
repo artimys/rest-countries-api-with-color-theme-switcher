@@ -1,8 +1,9 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import useRestCountriesFetch from '../hooks/UseRestCountriesFetch'
 import { useTheme } from '../context/ThemeContext'
 
+import PageLoader from '../component/layout/PageLoader'
 import styles from '../component/styles/CountryDetail.module.css'
 
 import ErrorBoundary from '../component/ErrorBoundary'
@@ -10,10 +11,8 @@ import ErrorBoundary from '../component/ErrorBoundary'
 function CountryDetail() {
     console.log("Detail Page Render");
 
-    // Get query param
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const countryParam = searchParams.get('c');
+    const { name: countryParam } = useParams();
+    const navigate = useNavigate();
 
     const { isLoading, error, fetchCountryDetail } = useRestCountriesFetch();
     const [country, setCountry] = useState({});
@@ -27,7 +26,7 @@ function CountryDetail() {
 
         return () => {
         }
-    }, []);
+    }, [countryParam]);
 
     const getCountry = () => {
         fetchCountryDetail(countryParam)
@@ -39,16 +38,21 @@ function CountryDetail() {
         console.log("getCountry() done");
     }
 
+    const goBack = () => {
+        navigate(-1);
+    }
 
     return (
         <>
             <ErrorBoundary fallback="FATAL ERROR">
 
                 <nav className={styles.detail__nav}>
-                    <Link to="/" className={darkTheme ? styles.btn : styles['btn-dark']}>
+                    <button to="#" onClick={goBack} className={darkTheme ? styles.btn : styles['btn-dark']}>
                         <i className="fa-solid fa-arrow-left-long"></i>Back
-                    </Link>
+                    </button>
                 </nav>
+
+                { isLoading && <PageLoader /> }
 
                 <section className={styles.detail__card}>
                     {Object.keys(country).length > 0 && (
@@ -113,7 +117,7 @@ function CountryDetail() {
 
                                     <div>
                                         {country.borders.map((country, index) => (
-                                            <Link key={index} to="/" className={`${darkTheme ? styles.btn : styles['btn-dark']} ${styles['btn-slim']}`}>{country}</Link>
+                                            <Link key={index} to={`/country/${country.toLowerCase()}`} className={`${darkTheme ? styles.btn : styles['btn-dark']} ${styles['btn-slim']}`}>{country}</Link>
                                         ))}
                                     </div>
                                 </div>
